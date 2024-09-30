@@ -1,19 +1,23 @@
 <?php
 session_start();
-include 'crud.php';
 
-if (!isset($_SESSION['usuario_id'])) {
-    header('Location: login.php'); 
-    exit();
+include 'db.php';
+
+function criarNota($titulo, $conteudo, $id_usuario) {
+    global $pdo;
+
+    $stmt = $pdo->prepare("INSERT INTO notas (titulo, conteudo, id_usuario) VALUES (?, ?, ?)");
+    if (!$stmt->execute([$titulo, $conteudo, $id_usuario])) {
+        die("Erro ao criar nota: " . implode(", ", $stmt->errorInfo()));
+    }
 }
 
-$id_usuario = $_SESSION['usuario_id'];
+function lerNotasPorUsuario($id_usuario) {
+    global $pdo;
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $titulo = $_POST['titulo'];
-    $conteudo = $_POST['conteudo'];
-    criarNota($titulo, $conteudo, $id_usuario);
-    echo "<p>Nota criada com sucesso!</p>";
+    $stmt = $pdo->prepare("SELECT * FROM notas WHERE id_usuario = ?");
+    $stmt->execute([$id_usuario]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
 
@@ -32,16 +36,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </form>
 
     <h2>Notas</h2>
-    <?php
-    $notas = lerNotasPorUsuario($id_usuario);
-    foreach ($notas as $nota) {
-        echo "<div>";
-        echo "<h3>" . htmlspecialchars($nota['titulo']) . "</h3>";
-        echo "<p>" . nl2br(htmlspecialchars($nota['conteudo'])) . "</p>";
-        echo "<a href='editar.php?id=" . $nota['id'] . "'>Editar</a>";
-        echo "<a href='deletar.php?id=" . $nota['id'] . "'>Deletar</a>";
-        echo "</div>";
-    }
-    ?>
+    <?php if (!empty($notas)): ?>
+        <?php foreach ($notas as $nota): ?>
+            <div>
+                <h3><?php echo htmlspecialchars($nota['titulo']); ?></h3>
+                <p><?php echo nl2br(htmlspecialchars($nota['conteudo'])); ?></p>
+                <a href="update.php?id=<?php echo $nota['id']; ?>">Editar</a>
+                <a href="delete.php?id=<?php echo $nota['id']; ?>">Deletar</a>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>Nenhuma nota encontrada.</p>
+    <?php endif; ?>
 </body>
 </html>

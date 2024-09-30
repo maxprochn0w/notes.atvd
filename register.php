@@ -1,4 +1,5 @@
 <?php
+session_start();
 include 'crud.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -7,6 +8,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $senha = $_POST['senha'];
 
     criarUsuario($nome, $email, $senha);
-    echo "Usuário registrado com sucesso!";
+    echo "<p>Usuário registrado com sucesso!</p>";
 }
 ?>
