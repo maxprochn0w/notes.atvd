@@ -1,9 +1,12 @@
 <?php
 session_start();
-include 'crud.php';
 
-// Aqui você deve definir o ID do usuário logado
-$id_usuario = $_SESSION['usuario_id']; // Supondo que você tenha uma sessão do usuário
+if (!isset($_SESSION['usuario_id'])) {
+
+    die("Usuário não autenticado. Faça login para continuar.");
+}
+
+$id_usuario = $_SESSION['usuario_id'];
 
 $notas = lerNotasPorUsuario($id_usuario);
 ?>
@@ -18,11 +21,11 @@ $notas = lerNotasPorUsuario($id_usuario);
     <h1>Bloco de Notas</h1>
 
     <form method="POST" action="create.php">
-        <input type="text" name="titulo" placeholder="Título" required>
-        <textarea name="conteudo" placeholder="Conteúdo" required></textarea>
-        <input type="hidden" name="id_usuario" value="<?php echo $id_usuario; ?>">
-        <button type="submit">Criar Nota</button>
-    </form>
+    <input type="text" name="titulo" placeholder="Título" required>
+    <textarea name="conteudo" placeholder="Conteúdo" required></textarea>
+    <input type="hidden" name="id_usuario" value="<?php echo $id_usuario; ?>"> 
+    <button type="submit">Criar Nota</button>
+</form>
 
     <h2>Notas</h2>
     <?php foreach ($notas as $nota): ?>
