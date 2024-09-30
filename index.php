@@ -17,7 +17,7 @@ $notas = lerNotasPorUsuario($id_usuario);
 <body>
     <h1>Bloco de Notas</h1>
 
-    <form method="POST" action="criar.php">
+    <form method="POST" action="create.php">
         <input type="text" name="titulo" placeholder="Título" required>
         <textarea name="conteudo" placeholder="Conteúdo" required></textarea>
         <input type="hidden" name="id_usuario" value="<?php echo $id_usuario; ?>">
@@ -29,8 +29,8 @@ $notas = lerNotasPorUsuario($id_usuario);
         <div>
             <h3><?php echo htmlspecialchars($nota['titulo']); ?></h3>
             <p><?php echo nl2br(htmlspecialchars($nota['conteudo'])); ?></p>
-            <a href="editar.php?id=<?php echo $nota['id']; ?>">Editar</a>
-            <a href="deletar.php?id=<?php echo $nota['id']; ?>">Deletar</a>
+            <a href="update.php?id=<?php echo $nota['id']; ?>">Editar</a>
+            <a href="delete.php?id=<?php echo $nota['id']; ?>">Deletar</a>
         </div>
     <?php endforeach; ?>
 </body>
